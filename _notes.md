@@ -28,11 +28,11 @@ git push origin --tags
 
 
 Can you do the following:
-- Make 4x4 widget into a 3x4 
+Done - Make 4x4 widget into a 3x4 
 - Make "Version: 3.0" text in Setting Information section to pull version number from git based on latest tag 
 - request notification permission on app first start similar to location permission
  - Change app so notification permissions is requested when app first starts similar to location permission.  Currently I only get location permission, after closing and reopening the app I get the notification permission.
-- add count down on notification
+- add count down on before notification so that
 
 
 ### Fixs
