@@ -5,7 +5,7 @@
 ## Using https://jules.google.com/
 
 ## Download latest APK
-https://github.com/jmasalma/AdhanAlarm2/releases/latest
+https://github.com/jmasalma/AdhanAlarm3/releases/latest
 
 
 ## Increment tag
@@ -32,15 +32,14 @@ Can you do the following:
 - Make "Version: 3.0" text in Setting Information section to pull version number from git based on latest tag 
 - request notification permission on app first start similar to location permission
  - Change app so notification permissions is requested when app first starts similar to location permission.  Currently I only get location permission, after closing and reopening the app I get the notification permission.
-
 - add count down on notification
 
 
 ### Fixs
 Done - when the app first starts after being installed or data cleared, the today tab is empty.  It populates after I go to settings an click get GPS Location
 Done - Fix deprecated calls:
-Done - w: file:///home/runner/work/AdhanAlarm2/AdhanAlarm2/app/src/main/java/islam/adhanalarm/MainViewModel.kt:7:47 'LocalBroadcastManager' is deprecated. Deprecated in Java
-Done - w: file:///home/runner/work/AdhanAlarm2/AdhanAlarm2/app/src/main/java/islam/adhanalarm/MainViewModel.kt:80:9 'LocalBroadcastManager' is deprecated. Deprecated in Java
+Done - w: file:///home/runner/work/AdhanAlarm3/AdhanAlarm3/app/src/main/java/islam/adhanalarm/MainViewModel.kt:7:47 'LocalBroadcastManager' is deprecated. Deprecated in Java
+Done - w: file:///home/runner/work/AdhanAlarm3/AdhanAlarm3/app/src/main/java/islam/adhanalarm/MainViewModel.kt:80:9 'LocalBroadcastManager' is deprecated. Deprecated in Java
 Done - Fix fajr and ishaa prayer times
 Done - show hijri date in today tab in the app, in default language
 Done - Add build date and latest version tag to the information section at the bottom of the setting page
@@ -86,10 +85,19 @@ Done - Add tests
 Done - Add code inline docs
 
 
+## Setup Repo
+
+https://github.com/jmasalma/AdhanAlarm3/settings/actions
+
+Workflow permissions -> Read and write permissions
+
+
 ## Add the following setup scripts
 
-https://jules.google.com/repo/github/jmasalma/AdhanAlarm2/config
+https://jules.google.com/repo/github/jmasalma/AdhanAlarm3/config
+
 ```bash
+
 #!/bin/bash
 
 # Exit immediately if a command exits with a non-zero status.
