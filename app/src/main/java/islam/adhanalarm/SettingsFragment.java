@@ -194,7 +194,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
         }
-        f (key.equals("beforePrayerNotification")) {
+        if (key.equals("beforePrayerNotification")) {
             toggleBeforePrayerNotificationCustom();
         }
     }
