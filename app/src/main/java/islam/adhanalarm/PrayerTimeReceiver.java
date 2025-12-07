@@ -47,19 +47,16 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
     private void showPrayerTimeNotification(Context context, Intent intent) {
         String prayerName = intent.getStringExtra("prayer_name");
         int notificationId = intent.getIntExtra("notification_id", 1);
-        String notificationTitle;
-        String notificationMessage;
 
         if (notificationId < CONSTANT.NOTIFICATION_ID_OFFSET) {
             NotificationHelper.cancelNotification(context, notificationId + CONSTANT.NOTIFICATION_ID_OFFSET);
-            notificationTitle = "Prayer Time";
-            notificationMessage = "It's time for " + prayerName;
+            NotificationHelper.showNotification(context, "Prayer Time", "It's time for " + prayerName, notificationId);
         } else {
-            notificationTitle = "Upcoming Prayer";
-            notificationMessage = prayerName;
+            long prayerTimeMillis = intent.getLongExtra("prayer_time_millis", 0);
+            if (prayerTimeMillis > 0) {
+                NotificationHelper.showCountdownNotification(context, prayerName, prayerTimeMillis, notificationId);
+            }
         }
-
-        NotificationHelper.showNotification(context, notificationTitle, notificationMessage, notificationId);
     }
 
     private void updateWidgets(Context context) {
