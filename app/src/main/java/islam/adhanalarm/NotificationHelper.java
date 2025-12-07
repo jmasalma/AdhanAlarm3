@@ -49,6 +49,20 @@ public class NotificationHelper {
         notificationManager.notify(notificationId, builder.build());
     }
 
+    @SuppressLint("MissingPermission")
+    public static void showCountdownNotification(Context context, String title, long prayerTimeMillis, int notificationId) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.icon)
+                .setContentTitle(title)
+                .setUsesChronometer(true)
+                .setChronometerCountDown(true)
+                .setWhen(prayerTimeMillis)
+                .setTimeoutAfter(prayerTimeMillis - System.currentTimeMillis())
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notificationManager.notify(notificationId, builder.build());
+    }
+
     /**
      * Cancels a notification.
      *
