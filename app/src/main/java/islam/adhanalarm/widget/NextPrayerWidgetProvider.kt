@@ -1,9 +1,12 @@
 package islam.adhanalarm.widget
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.content.Intent
 import android.os.SystemClock
 import android.widget.RemoteViews
+import islam.adhanalarm.MainActivity
 import islam.adhanalarm.R
 import islam.adhanalarm.handler.ScheduleHandler
 import islam.adhanalarm.repo.PrayerTimesRepository
@@ -29,6 +32,11 @@ class NextPrayerWidgetProvider : BaseWidgetProvider() {
      */
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.next_prayer_widget)
+
+        val intent = Intent(context, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        views.setOnClickPendingIntent(R.id.next_prayer_widget_layout, pendingIntent)
+
         val repository = PrayerTimesRepository(context)
         val schedule = repository.getTodaysSchedule()
 
