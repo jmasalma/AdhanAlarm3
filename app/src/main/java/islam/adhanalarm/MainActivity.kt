@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 viewModel.loadLocationFromSettings()
             }
+            requestNotificationPermission()
         }
 
     private val requestNotificationPermissionLauncher =
@@ -74,7 +75,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = Html.fromHtml("<font face='monospace'>" + supportActionBar?.title + "</font>", Html.FROM_HTML_MODE_LEGACY)
 
         requestLocationPermission()
-        requestNotificationPermission()
         requestExactAlarmPermission()
     }
 
