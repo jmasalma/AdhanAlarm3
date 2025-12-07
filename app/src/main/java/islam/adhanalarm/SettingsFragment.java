@@ -211,7 +211,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
     }
 
-    rivate void toggleBeforePrayerNotificationCustom() {
+    private void toggleBeforePrayerNotificationCustom() {
         ListPreference beforePrayerNotification = (ListPreference) findPreference("beforePrayerNotification");
         EditTextPreference beforePrayerNotificationCustom = (EditTextPreference) findPreference("beforePrayerNotificationCustom");
         beforePrayerNotificationCustom.setEnabled(beforePrayerNotification.getValue().equals("-1"));
