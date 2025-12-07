@@ -27,12 +27,17 @@ git push origin --tags
 ## ToDo
 
 
-Can you do the following:
+- color change widget(s) to gradient from green to red before prayer time happens.
+
+
 Done - Make 4x4 widget into a 3x4 
 - Make "Version: 3.0" text in Setting Information section to pull version number from git based on latest tag 
-- request notification permission on app first start similar to location permission
- - Change app so notification permissions is requested when app first starts similar to location permission.  Currently I only get location permission, after closing and reopening the app I get the notification permission.
-- add count down on before notification so that
+Done - request notification permission on app first start similar to location permission
+Done - Change app so notification permissions is requested when app first starts similar to location permission.  Currently I only get location permission, after closing and reopening the app I get the notification permission.
+Done - add count down to "before notification" to count down to next prayer time
+- Add extra option to "before notification" to allow input of minutes
+- Make sure clicking widget opens the app
+
 
 
 ### Fixs
@@ -44,8 +49,8 @@ Done - Fix fajr and ishaa prayer times
 Done - show hijri date in today tab in the app, in default language
 Done - Add build date and latest version tag to the information section at the bottom of the setting page
 Done - Setting to update long/lat once permissions are granted.
-- check and fix notifications as they seem to trigger at wrong times (extra triggers)
-- auto pick version in info section from git
+Done - check and fix notifications as they seem to trigger at wrong times (extra triggers)
+Done - auto pick version in info section from git
 - use targetCellWidth and targetCellHeight instead of minWidth and minHeight for widgets
 
 ### Fix notifications
@@ -53,7 +58,7 @@ Done - Remove it
 Done - Ask AI to add it again
 Done ? - seems to be working now! - Not working, could be because latest android does not show notifications form sideloaded app, try on an older android...
 Done - Dismiss the before notification when next prayer time notification happens
-- request notification permission on app first start similar to location permission
+Done - request notification permission on app first start similar to location permission
 Done - update small notification count down and show seconds as well...
 Done - Make sure countdown is updated live
 
@@ -66,7 +71,7 @@ Done - Make smaller widget match app style and make it a 1x1 if possible
 Done - Make larger widget default to 4x4
 Done - reformat 1x1 widget
 Done - show count down to next prayer in 1x2 widget
-- adjust 4x4 widget to be slightly narrower
+Done - adjust 4x4 widget to be slightly narrower
 Done - clicking on widget should open the app
 
 
@@ -96,7 +101,13 @@ Workflow permissions -> Read and write permissions
 
 https://jules.google.com/repo/github/jmasalma/AdhanAlarm3/config
 
+
+### V1 - seems to be causing jules error
+
+Error: jules encountered an error when working on the task.
+
 ```bash
+
 
 #!/bin/bash
 
@@ -196,3 +207,70 @@ echo "Verification complete. adb command should be available in new shells."
 ```
 
 
+
+### V2 - to fix jules error
+
+```bash
+
+#!/bin/bash
+set -e
+
+# --- 1. Set up constants ---
+# Use the absolute path for safety
+export ANDROID_HOME="$HOME/android-sdk"
+CMDLINE_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip"
+TOOLS_ZIP="commandlinetools.zip"
+
+echo "=== Starting Android SDK Setup ==="
+
+# --- 2. Clean Install Directory ---
+# Clear previous attempts to avoid "folder already exists" errors causing weird nesting
+rm -rf "$ANDROID_HOME"
+mkdir -p "$ANDROID_HOME/cmdline-tools"
+
+# --- 3. Download and Extract ---
+echo "Downloading Command-line Tools..."
+wget -q --output-document="$TOOLS_ZIP" "$CMDLINE_TOOLS_URL"
+
+echo "Extracting..."
+unzip -q "$TOOLS_ZIP"
+# The zip extracts to a folder named "cmdline-tools"
+# We need the structure: $ANDROID_HOME/cmdline-tools/latest/bin
+mkdir -p "$ANDROID_HOME/cmdline-tools/latest"
+mv cmdline-tools/* "$ANDROID_HOME/cmdline-tools/latest/"
+rmdir cmdline-tools
+rm "$TOOLS_ZIP"
+
+# --- 4. Define SDK Manager Variable ---
+SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+chmod +x "$SDKMANAGER"
+
+# --- 5. Install Packages & Accept Licenses ---
+echo "Accepting Licenses and Installing Core Packages..."
+# We combine the install command to save time and reduce output spam
+# "platform-tools" : Required for adb
+# "platforms;android-34" : The target SDK version
+# "build-tools;34.0.0" : The build tools version
+yes | "$SDKMANAGER" --licenses > /dev/null 2>&1
+echo "Installing platform-tools, platforms;android-34, build-tools;34.0.0..."
+yes | "$SDKMANAGER" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+
+# --- 6. CRITICAL FIX: Create local.properties ---
+# This ensures Gradle finds the SDK even if shell variables are lost
+echo "Creating local.properties..."
+PROJECT_ROOT=$(pwd) 
+# Assumes the script runs in the repo root. If not, hardcode the path.
+echo "sdk.dir=$ANDROID_HOME" > "$PROJECT_ROOT/local.properties"
+
+# --- 7. Persistence (Backup method) ---
+# We still update .bashrc for future interactive sessions
+echo "export ANDROID_HOME=$ANDROID_HOME" >> "$HOME/.bashrc"
+echo "export PATH=\$PATH:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools" >> "$HOME/.bashrc"
+
+# --- 8. Verification ---
+echo "=== Setup Complete ==="
+echo "SDK Location: $ANDROID_HOME"
+ls -la "$PROJECT_ROOT/local.properties"
+"$ANDROID_HOME/platform-tools/adb" --version
+
+```
