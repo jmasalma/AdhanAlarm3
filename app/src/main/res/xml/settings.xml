@@ -36,6 +36,12 @@
             android:entries="@array/before_prayer_notification_entries"
             android:entryValues="@array/before_prayer_notification_values"
             android:defaultValue="15" />
+        <EditTextPreference
+            android:key="beforePrayerNotificationCustom"
+            android:title="@string/custom"
+            android:summary="@string/minutes"
+            android:inputType="number"
+            android:defaultValue="10" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/advanced">
