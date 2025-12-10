@@ -120,6 +120,31 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             e.printStackTrace();
         }
 
+        final PreferenceCategory advancedCategory = (PreferenceCategory) findPreference("advanced");
+        final Preference altitude = findPreference("altitude");
+        final Preference pressure = findPreference("pressure");
+        final Preference temperature = findPreference("temperature");
+        final Preference rounding = findPreference("roundingTypesIndex");
+        final Preference offset = findPreference("offsetMinutes");
+
+        advancedCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                boolean isVisible = altitude.isVisible();
+                altitude.setVisible(!isVisible);
+                pressure.setVisible(!isVisible);
+                temperature.setVisible(!isVisible);
+                rounding.setVisible(!isVisible);
+                offset.setVisible(!isVisible);
+                return true;
+            }
+        });
+
+        altitude.setVisible(false);
+        pressure.setVisible(false);
+        temperature.setVisible(false);
+        rounding.setVisible(false);
+        offset.setVisible(false);
     }
 
     @Override
