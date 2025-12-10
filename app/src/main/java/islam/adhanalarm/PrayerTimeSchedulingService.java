@@ -10,7 +10,7 @@ import androidx.core.app.NotificationCompat;
 
 public class PrayerTimeSchedulingService extends Service {
 
-    private static final int NOTIFICATION_ID = 1;
+    private static final int NOTIFICATION_ID = Integer.MAX_VALUE;
 
     @Override
     public void onCreate() {

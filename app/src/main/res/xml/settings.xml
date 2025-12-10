@@ -34,7 +34,7 @@
             android:title="@string/before_prayer_notification"
             android:summary="@string/minutes"
             android:inputType="number"
-            android:defaultValue="15" />
+            android:defaultValue="0" />
     </PreferenceCategory>
 
     <PreferenceScreen android:title="@string/advanced">
