@@ -5,6 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 
 import islam.adhanalarm.widget.AllDayPrayersWidgetProvider;
 import islam.adhanalarm.widget.NextPrayerWidgetProvider;
@@ -20,7 +24,7 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         if (action != null) {
             switch (action) {
                 case CONSTANT.ACTION_UPDATE_PRAYER_TIMES:
-                    PrayerTimeScheduler.scheduleAlarms(context);
+                    context.startService(new Intent(context, PrayerTimeSchedulingService.class));
                     break;
                 case CONSTANT.ACTION_UPDATE_WIDGET:
                     updateWidgets(context);
@@ -48,7 +52,32 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         String prayerName = intent.getStringExtra("prayer_name");
         int notificationId = intent.getIntExtra("notification_id", 1);
 
+        SharedPreferences settings = null;
+        try {
+            MasterKey masterKey = new MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+
+            settings = EncryptedSharedPreferences.create(
+                    context,
+                    "secret_shared_prefs",
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (notificationId < CONSTANT.NOTIFICATION_ID_OFFSET) {
+            if (settings != null) {
+                int lastNotificationId = settings.getInt("last_notification_id", -1);
+                if (lastNotificationId != -1) {
+                    NotificationHelper.cancelNotification(context, lastNotificationId);
+                }
+                settings.edit().putInt("last_notification_id", notificationId).apply();
+            }
+
             NotificationHelper.cancelNotification(context, notificationId + CONSTANT.NOTIFICATION_ID_OFFSET);
             NotificationHelper.showNotification(context, "Prayer Time", "It's time for " + prayerName, notificationId);
         } else {

@@ -138,9 +138,11 @@ public class ScheduleHandler {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, prayerTime.getTimeInMillis(), pendingIntent);
 
             // Schedule before prayer notification
-            int beforePrayerNotificationTime = Integer.parseInt(settings.getString("beforePrayerNotification", "15"));
-            if (beforePrayerNotificationTime == -1) {
-                beforePrayerNotificationTime = Integer.parseInt(settings.getString("beforePrayerNotificationCustom", "10"));
+            int beforePrayerNotificationTime = 0;
+            try {
+                beforePrayerNotificationTime = Integer.parseInt(settings.getString("beforePrayerNotification", "0"));
+            } catch (NumberFormatException e) {
+                // Ignore
             }
             if (beforePrayerNotificationTime > 0) {
                 GregorianCalendar beforePrayerTime = (GregorianCalendar) prayerTime.clone();

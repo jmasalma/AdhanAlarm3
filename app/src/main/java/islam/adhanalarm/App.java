@@ -29,6 +29,7 @@ public class App extends Application {
         sInstance = this;
         mPlayer = MediaPlayer.create(this, R.raw.bismillah);
         NotificationHelper.createNotificationChannel(this);
+        startService(new Intent(this, PrayerTimeSchedulingService.class));
     }
 
     @Override

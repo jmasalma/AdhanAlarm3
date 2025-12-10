@@ -29,22 +29,15 @@
             android:entries="@array/time_format"
             android:entryValues="@array/time_format_values"
             android:defaultValue="0" />
-        <ListPreference
+        <EditTextPreference
             android:key="beforePrayerNotification"
             android:title="@string/before_prayer_notification"
-            android:summary="%s"
-            android:entries="@array/before_prayer_notification_entries"
-            android:entryValues="@array/before_prayer_notification_values"
-            android:defaultValue="15" />
-        <EditTextPreference
-            android:key="beforePrayerNotificationCustom"
-            android:title="@string/custom"
             android:summary="@string/minutes"
             android:inputType="number"
-            android:defaultValue="10" />
+            android:defaultValue="15" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/advanced">
+    <PreferenceScreen android:title="@string/advanced">
         <EditTextPreference
             android:key="altitude"
             android:title="@string/altitude"
@@ -72,7 +65,12 @@
             android:title="@string/offset"
             android:inputType="number|numberSigned"
             android:defaultValue="0" />
-    </PreferenceCategory>
+    </PreferenceScreen>
+
+    <Preference
+        android:key="disclaimer"
+        android:title="@string/disclaimer"
+        android:summary="@string/disclaimer_summary" />
 
     <Preference
         android:key="information"

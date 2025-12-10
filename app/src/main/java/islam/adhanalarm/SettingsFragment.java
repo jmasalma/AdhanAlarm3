@@ -33,7 +33,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "latitude",
             "longitude",
             "beforePrayerNotification",
-            "beforePrayerNotificationCustom",
             "altitude",
             "pressure",
             "temperature",
@@ -120,8 +119,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
-        toggleBeforePrayerNotificationCustom();
     }
 
     @Override
@@ -194,10 +191,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         Intent intent = new Intent(getActivity(), PrayerTimeReceiver.class);
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
-        }
-
-        if (key.equals("beforePrayerNotification")) {
-            toggleBeforePrayerNotificationCustom();
         }
     }
 
