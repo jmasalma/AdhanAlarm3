@@ -139,11 +139,14 @@ public class ScheduleHandler {
 
             // Schedule before prayer notification
             int beforePrayerNotificationTime = Integer.parseInt(settings.getString("beforePrayerNotification", "15"));
+            if (beforePrayerNotificationTime == -1) {
+                beforePrayerNotificationTime = Integer.parseInt(settings.getString("beforePrayerNotificationCustom", "10"));
+            }
             if (beforePrayerNotificationTime > 0) {
                 GregorianCalendar beforePrayerTime = (GregorianCalendar) prayerTime.clone();
                 beforePrayerTime.add(Calendar.MINUTE, -beforePrayerNotificationTime);
                 Intent beforeIntent = new Intent(context, islam.adhanalarm.PrayerTimeReceiver.class);
-                beforeIntent.putExtra("prayer_name", prayerNames[i]);
+                beforeIntent.putExtra("prayer_name", prayerNames[i] + " (in " + beforePrayerNotificationTime + " minutes)");
                 beforeIntent.putExtra("notification_id", i + CONSTANT.NOTIFICATION_ID_OFFSET);
                 beforeIntent.putExtra("prayer_time_millis", prayerTime.getTimeInMillis());
                 PendingIntent beforePendingIntent = PendingIntent.getBroadcast(context, i + CONSTANT.REQUEST_CODE_OFFSET, beforeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
