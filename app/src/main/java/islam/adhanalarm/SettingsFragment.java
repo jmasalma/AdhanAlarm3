@@ -16,8 +16,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -33,13 +31,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "latitude",
             "longitude",
             "beforePrayerNotification",
-            "beforePrayerNotificationCustom",
             "altitude",
             "pressure",
             "temperature",
             "offsetMinutes"
     ));
-    private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;
     private Observer<Location> mLocationObserver;
 
@@ -50,24 +46,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         mViewModel = new MainViewModel(getActivity().getApplication());
 
-        try {
-            MasterKey masterKey = new MasterKey.Builder(getActivity(), MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-
-            mEncryptedSharedPreferences = EncryptedSharedPreferences.create(
-                    getActivity(),
-                    "secret_shared_prefs",
-                    masterKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-        } catch (GeneralSecurityException | IOException e) {
-            Log.e("SettingsFragment", "Failed to create encrypted shared preferences", e);
-            getActivity().finish(); // Can't work without preferences
-            return;
-        }
-
         mLocationObserver = new Observer<Location>() {
             @Override
             public void onChanged(@Nullable Location currentLocation) {
@@ -77,7 +55,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 final String longitude = Double.toString(currentLocation.getLongitude());
 
                 // Save to encrypted preferences
-                SharedPreferences.Editor editor = mEncryptedSharedPreferences.edit();
+                SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
                 editor.putString("latitude", latitude);
                 editor.putString("longitude", longitude);
                 editor.apply();
@@ -91,7 +69,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 longitudePref.setText(longitude);
                 updateSummary(longitudePref);
 
-                syncEncryptedToUi();
                 updateSummaries();
             }
         };
@@ -120,8 +97,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
-        toggleBeforePrayerNotificationCustom();
     }
 
     @Override
@@ -138,22 +113,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         // Register listener on the UI (default) preferences
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        // Sync from encrypted to UI preferences
-        syncEncryptedToUi();
-
         updateSummaries();
-    }
-
-    private void syncEncryptedToUi() {
-        SharedPreferences uiPrefs = getPreferenceManager().getSharedPreferences();
-        SharedPreferences.Editor uiEditor = uiPrefs.edit();
-        for (String key : PREFS_TO_UPDATE_SUMMARY) {
-            String value = mEncryptedSharedPreferences.getString(key, null);
-            if (value != null) {
-                uiEditor.putString(key, value);
-            }
-        }
-        uiEditor.apply();
     }
 
     private void updateSummaries() {
@@ -185,19 +145,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             } else if (pref instanceof ListPreference) {
                 updateListSummary((ListPreference) pref);
             }
-            // Sync the change to encrypted preferences
-            SharedPreferences.Editor encryptedEditor = mEncryptedSharedPreferences.edit();
-            encryptedEditor.putString(key, sharedPreferences.getString(key, ""));
-            encryptedEditor.apply();
 
         // Broadcast intent to update widget
         Intent intent = new Intent(getActivity(), PrayerTimeReceiver.class);
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
-        }
-
-        if (key.equals("beforePrayerNotification")) {
-            toggleBeforePrayerNotificationCustom();
         }
     }
 

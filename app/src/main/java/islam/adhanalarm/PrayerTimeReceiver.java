@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import islam.adhanalarm.widget.AllDayPrayersWidgetProvider;
 import islam.adhanalarm.widget.NextPrayerWidgetProvider;
@@ -20,7 +22,11 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         if (action != null) {
             switch (action) {
                 case CONSTANT.ACTION_UPDATE_PRAYER_TIMES:
-                    PrayerTimeScheduler.scheduleAlarms(context);
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        context.startForegroundService(new Intent(context, PrayerTimeSchedulingService.class));
+                    } else {
+                        context.startService(new Intent(context, PrayerTimeSchedulingService.class));
+                    }
                     break;
                 case CONSTANT.ACTION_UPDATE_WIDGET:
                     updateWidgets(context);
@@ -48,7 +54,17 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         String prayerName = intent.getStringExtra("prayer_name");
         int notificationId = intent.getIntExtra("notification_id", 1);
 
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+
         if (notificationId < CONSTANT.NOTIFICATION_ID_OFFSET) {
+            if (settings != null) {
+                int lastNotificationId = settings.getInt("last_notification_id", -1);
+                if (lastNotificationId != -1) {
+                    NotificationHelper.cancelNotification(context, lastNotificationId);
+                }
+                settings.edit().putInt("last_notification_id", notificationId).apply();
+            }
+
             NotificationHelper.cancelNotification(context, notificationId + CONSTANT.NOTIFICATION_ID_OFFSET);
             NotificationHelper.showNotification(context, "Prayer Time", "It's time for " + prayerName, notificationId);
         } else {
