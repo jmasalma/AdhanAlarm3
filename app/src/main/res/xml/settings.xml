@@ -29,19 +29,12 @@
             android:entries="@array/time_format"
             android:entryValues="@array/time_format_values"
             android:defaultValue="0" />
-        <ListPreference
+        <EditTextPreference
             android:key="beforePrayerNotification"
             android:title="@string/before_prayer_notification"
-            android:summary="%s"
-            android:entries="@array/before_prayer_notification_entries"
-            android:entryValues="@array/before_prayer_notification_values"
-            android:defaultValue="15" />
-        <EditTextPreference
-            android:key="beforePrayerNotificationCustom"
-            android:title="@string/custom"
-            android:summary="@string/minutes"
+            android:summary="@string/minutes_0_to_disable"
             android:inputType="number"
-            android:defaultValue="10" />
+            android:defaultValue="0" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/advanced">

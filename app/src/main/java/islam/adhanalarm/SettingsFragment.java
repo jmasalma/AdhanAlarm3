@@ -33,7 +33,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "latitude",
             "longitude",
             "beforePrayerNotification",
-            "beforePrayerNotificationCustom",
             "altitude",
             "pressure",
             "temperature",
@@ -121,7 +120,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             e.printStackTrace();
         }
 
-        toggleBeforePrayerNotificationCustom();
     }
 
     @Override
@@ -195,10 +193,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
         }
-
-        if (key.equals("beforePrayerNotification")) {
-            toggleBeforePrayerNotificationCustom();
-        }
     }
 
     private void updateSummary(EditTextPreference preference) {
@@ -211,11 +205,5 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (preference != null) {
             preference.setSummary(preference.getEntry());
         }
-    }
-
-    private void toggleBeforePrayerNotificationCustom() {
-        ListPreference beforePrayerNotification = (ListPreference) findPreference("beforePrayerNotification");
-        EditTextPreference beforePrayerNotificationCustom = (EditTextPreference) findPreference("beforePrayerNotificationCustom");
-        beforePrayerNotificationCustom.setEnabled(beforePrayerNotification.getValue().equals("-1"));
     }
 }
