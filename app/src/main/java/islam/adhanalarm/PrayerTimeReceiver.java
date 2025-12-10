@@ -6,9 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
+import android.preference.PreferenceManager;
 
 import islam.adhanalarm.widget.AllDayPrayersWidgetProvider;
 import islam.adhanalarm.widget.NextPrayerWidgetProvider;
@@ -56,22 +54,7 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         String prayerName = intent.getStringExtra("prayer_name");
         int notificationId = intent.getIntExtra("notification_id", 1);
 
-        SharedPreferences settings = null;
-        try {
-            MasterKey masterKey = new MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-
-            settings = EncryptedSharedPreferences.create(
-                    context,
-                    "secret_shared_prefs",
-                    masterKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
         if (notificationId < CONSTANT.NOTIFICATION_ID_OFFSET) {
             if (settings != null) {

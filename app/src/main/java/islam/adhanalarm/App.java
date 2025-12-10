@@ -29,6 +29,22 @@ public class App extends Application {
         sInstance = this;
         mPlayer = MediaPlayer.create(this, R.raw.bismillah);
         NotificationHelper.createNotificationChannel(this);
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable e) {
+                Intent intent = new Intent(getApplicationContext(), CrashActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                java.io.StringWriter sw = new java.io.StringWriter();
+                java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+                e.printStackTrace(pw);
+                String stackTrace = sw.toString();
+                intent.putExtra("stacktrace", stackTrace);
+                startActivity(intent);
+                System.exit(1);
+            }
+        });
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             startForegroundService(new Intent(this, PrayerTimeSchedulingService.class));
         } else {

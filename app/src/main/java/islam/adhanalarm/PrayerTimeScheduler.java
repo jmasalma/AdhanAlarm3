@@ -2,9 +2,7 @@ package islam.adhanalarm;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
+import android.preference.PreferenceManager;
 
 import net.sourceforge.jitl.astro.Location;
 
@@ -14,23 +12,7 @@ import islam.adhanalarm.handler.ScheduleHandler;
 public class PrayerTimeScheduler {
 
     public static ScheduleData scheduleAlarms(Context context) {
-        SharedPreferences settings;
-        try {
-            MasterKey masterKey = new MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-
-            settings = EncryptedSharedPreferences.create(
-                    context,
-                    "secret_shared_prefs",
-                    masterKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 
         String latitude = settings.getString("latitude", null);
         String longitude = settings.getString("longitude", null);

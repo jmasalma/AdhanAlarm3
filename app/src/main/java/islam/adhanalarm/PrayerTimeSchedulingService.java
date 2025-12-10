@@ -1,6 +1,7 @@
 package islam.adhanalarm;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -31,10 +32,14 @@ public class PrayerTimeSchedulingService extends Service {
     }
 
     private Notification createNotification() {
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
         return new NotificationCompat.Builder(this, "prayer_time_channel")
                 .setContentTitle("Adhan Alarm")
-                .setContentText("Scheduling prayer time notifications.")
+                .setContentText("Ensuring timely prayer notifications.")
                 .setSmallIcon(R.drawable.icon)
+                .setContentIntent(pendingIntent)
                 .build();
     }
 }
