@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 
@@ -128,23 +129,33 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         final Preference offset = findPreference("offsetMinutes");
 
         advancedCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            private boolean mAdvancedVisible = false;
+
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                boolean isVisible = altitude.isVisible();
-                altitude.setVisible(!isVisible);
-                pressure.setVisible(!isVisible);
-                temperature.setVisible(!isVisible);
-                rounding.setVisible(!isVisible);
-                offset.setVisible(!isVisible);
+                mAdvancedVisible = !mAdvancedVisible;
+                if (mAdvancedVisible) {
+                    advancedCategory.addPreference(altitude);
+                    advancedCategory.addPreference(pressure);
+                    advancedCategory.addPreference(temperature);
+                    advancedCategory.addPreference(rounding);
+                    advancedCategory.addPreference(offset);
+                } else {
+                    advancedCategory.removePreference(altitude);
+                    advancedCategory.removePreference(pressure);
+                    advancedCategory.removePreference(temperature);
+                    advancedCategory.removePreference(rounding);
+                    advancedCategory.removePreference(offset);
+                }
                 return true;
             }
         });
 
-        altitude.setVisible(false);
-        pressure.setVisible(false);
-        temperature.setVisible(false);
-        rounding.setVisible(false);
-        offset.setVisible(false);
+        advancedCategory.removePreference(altitude);
+        advancedCategory.removePreference(pressure);
+        advancedCategory.removePreference(temperature);
+        advancedCategory.removePreference(rounding);
+        advancedCategory.removePreference(offset);
     }
 
     @Override
