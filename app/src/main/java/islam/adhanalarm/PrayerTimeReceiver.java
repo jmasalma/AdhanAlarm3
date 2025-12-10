@@ -24,7 +24,11 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         if (action != null) {
             switch (action) {
                 case CONSTANT.ACTION_UPDATE_PRAYER_TIMES:
-                    context.startService(new Intent(context, PrayerTimeSchedulingService.class));
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        context.startForegroundService(new Intent(context, PrayerTimeSchedulingService.class));
+                    } else {
+                        context.startService(new Intent(context, PrayerTimeSchedulingService.class));
+                    }
                     break;
                 case CONSTANT.ACTION_UPDATE_WIDGET:
                     updateWidgets(context);

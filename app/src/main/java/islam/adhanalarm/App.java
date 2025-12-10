@@ -29,7 +29,11 @@ public class App extends Application {
         sInstance = this;
         mPlayer = MediaPlayer.create(this, R.raw.bismillah);
         NotificationHelper.createNotificationChannel(this);
-        startService(new Intent(this, PrayerTimeSchedulingService.class));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, PrayerTimeSchedulingService.class));
+        } else {
+            startService(new Intent(this, PrayerTimeSchedulingService.class));
+        }
     }
 
     @Override
