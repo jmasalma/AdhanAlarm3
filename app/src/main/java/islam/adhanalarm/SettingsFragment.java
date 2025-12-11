@@ -126,27 +126,26 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         final PreferenceCategory advancedCategory = (PreferenceCategory) findPreference("advanced");
         final List<Preference> advancedPreferences = new ArrayList<>();
-        for (int i = 0; i < advancedCategory.getPreferenceCount(); i++) {
-            advancedPreferences.add(advancedCategory.getPreference(i));
+        while (advancedCategory.getPreferenceCount() > 0) {
+            Preference p = advancedCategory.getPreference(0);
+            advancedPreferences.add(p);
+            advancedCategory.removePreference(p);
         }
 
         advancedCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if (advancedCategory.getPreferenceCount() > 0) {
-                    // Hide the advanced preferences
-                    advancedCategory.removeAll();
-                } else {
-                    // Show the advanced preferences
-                    for (Preference advancedPreference : advancedPreferences) {
-                        advancedCategory.addPreference(advancedPreference);
+                if (advancedCategory.getPreferenceCount() == 0) {
+                    for (Preference p : advancedPreferences) {
+                        advancedCategory.addPreference(p);
                     }
+                } else {
+                    advancedCategory.removeAll();
                 }
                 ((BaseAdapter) getPreferenceScreen().getRootAdapter()).notifyDataSetChanged();
                 return true;
             }
         });
-        advancedCategory.removeAll();
     }
 
     @Override
