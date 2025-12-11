@@ -50,6 +50,8 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
 
         if (notificationId < CONSTANT.NOTIFICATION_ID_OFFSET) {
             NotificationHelper.cancelNotification(context, notificationId + CONSTANT.NOTIFICATION_ID_OFFSET);
+            int previousNotificationId = (notificationId == CONSTANT.FAJR) ? CONSTANT.ISHAA : notificationId - 1;
+            NotificationHelper.cancelNotification(context, previousNotificationId);
             NotificationHelper.showNotification(context, "Prayer Time", "It's time for " + prayerName, notificationId);
         } else {
             long prayerTimeMillis = intent.getLongExtra("prayer_time_millis", 0);
