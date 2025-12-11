@@ -14,6 +14,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.widget.BaseAdapter;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -147,6 +148,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     advancedCategory.removePreference(rounding);
                     advancedCategory.removePreference(offset);
                 }
+
+                ((BaseAdapter) getPreferenceScreen().getRootAdapter()).notifyDataSetChanged();
                 return true;
             }
         });
