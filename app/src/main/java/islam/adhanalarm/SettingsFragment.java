@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.util.Log;
+import android.widget.BaseAdapter;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
@@ -23,8 +25,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +37,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "latitude",
             "longitude",
             "beforePrayerNotification",
-            "beforePrayerNotificationCustom",
             "altitude",
             "pressure",
             "temperature",
@@ -121,7 +124,28 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             e.printStackTrace();
         }
 
-        toggleBeforePrayerNotificationCustom();
+        final PreferenceCategory advancedCategory = (PreferenceCategory) findPreference("advanced");
+        final List<Preference> advancedPreferences = new ArrayList<>();
+        while (advancedCategory.getPreferenceCount() > 0) {
+            Preference p = advancedCategory.getPreference(0);
+            advancedPreferences.add(p);
+            advancedCategory.removePreference(p);
+        }
+
+        advancedCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (advancedCategory.getPreferenceCount() == 0) {
+                    for (Preference p : advancedPreferences) {
+                        advancedCategory.addPreference(p);
+                    }
+                } else {
+                    advancedCategory.removeAll();
+                }
+                ((BaseAdapter) getPreferenceScreen().getRootAdapter()).notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -195,10 +219,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
         }
-
-        if (key.equals("beforePrayerNotification")) {
-            toggleBeforePrayerNotificationCustom();
-        }
     }
 
     private void updateSummary(EditTextPreference preference) {
@@ -211,11 +231,5 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (preference != null) {
             preference.setSummary(preference.getEntry());
         }
-    }
-
-    private void toggleBeforePrayerNotificationCustom() {
-        ListPreference beforePrayerNotification = (ListPreference) findPreference("beforePrayerNotification");
-        EditTextPreference beforePrayerNotificationCustom = (EditTextPreference) findPreference("beforePrayerNotificationCustom");
-        beforePrayerNotificationCustom.setEnabled(beforePrayerNotification.getValue().equals("-1"));
     }
 }
