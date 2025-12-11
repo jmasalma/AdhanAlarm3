@@ -25,8 +25,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -123,42 +125,28 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
 
         final PreferenceCategory advancedCategory = (PreferenceCategory) findPreference("advanced");
-        final Preference altitude = findPreference("altitude");
-        final Preference pressure = findPreference("pressure");
-        final Preference temperature = findPreference("temperature");
-        final Preference rounding = findPreference("roundingTypesIndex");
-        final Preference offset = findPreference("offsetMinutes");
+        final List<Preference> advancedPreferences = new ArrayList<>();
+        for (int i = 0; i < advancedCategory.getPreferenceCount(); i++) {
+            advancedPreferences.add(advancedCategory.getPreference(i));
+        }
 
         advancedCategory.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            private boolean mAdvancedVisible = false;
-
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                mAdvancedVisible = !mAdvancedVisible;
-                if (mAdvancedVisible) {
-                    advancedCategory.addPreference(altitude);
-                    advancedCategory.addPreference(pressure);
-                    advancedCategory.addPreference(temperature);
-                    advancedCategory.addPreference(rounding);
-                    advancedCategory.addPreference(offset);
+                if (advancedCategory.getPreferenceCount() > 0) {
+                    // Hide the advanced preferences
+                    advancedCategory.removeAll();
                 } else {
-                    advancedCategory.removePreference(altitude);
-                    advancedCategory.removePreference(pressure);
-                    advancedCategory.removePreference(temperature);
-                    advancedCategory.removePreference(rounding);
-                    advancedCategory.removePreference(offset);
+                    // Show the advanced preferences
+                    for (Preference advancedPreference : advancedPreferences) {
+                        advancedCategory.addPreference(advancedPreference);
+                    }
                 }
-
                 ((BaseAdapter) getPreferenceScreen().getRootAdapter()).notifyDataSetChanged();
                 return true;
             }
         });
-
-        advancedCategory.removePreference(altitude);
-        advancedCategory.removePreference(pressure);
-        advancedCategory.removePreference(temperature);
-        advancedCategory.removePreference(rounding);
-        advancedCategory.removePreference(offset);
+        advancedCategory.removeAll();
     }
 
     @Override
