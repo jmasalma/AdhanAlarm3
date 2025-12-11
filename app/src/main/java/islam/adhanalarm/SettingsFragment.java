@@ -105,8 +105,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         findPreference("information").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.spiritofislam.com"));
-                startActivity(browserIntent);
                 return true;
             }
         });
