@@ -36,7 +36,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "longitude",
             "beforePrayerNotification",
             "altitude",
-            "pressure"
+            "pressure",
+            "preAlertMins"
     ));
     private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;

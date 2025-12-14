@@ -138,18 +138,18 @@ public class ScheduleHandler {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, prayerTime.getTimeInMillis(), pendingIntent);
 
             // Schedule before prayer notification
-            int beforePrayerNotificationTime = 0;
+            int preAlertMins = 0;
             try {
-                beforePrayerNotificationTime = Integer.parseInt(settings.getString("beforePrayerNotification", "0"));
+                preAlertMins = Integer.parseInt(settings.getString("preAlertMins", "0"));
             } catch (NumberFormatException e) {
                 // Ignore and use 0
             }
 
-            if (beforePrayerNotificationTime > 0) {
+            if (preAlertMins > 0) {
                 GregorianCalendar beforePrayerTime = (GregorianCalendar) prayerTime.clone();
-                beforePrayerTime.add(Calendar.MINUTE, -beforePrayerNotificationTime);
+                beforePrayerTime.add(Calendar.MINUTE, -preAlertMins);
                 Intent beforeIntent = new Intent(context, islam.adhanalarm.PrayerTimeReceiver.class);
-                beforeIntent.putExtra("prayer_name", prayerNames[i] + " (in " + beforePrayerNotificationTime + " minutes)");
+                beforeIntent.putExtra("prayer_name", prayerNames[i] + " (in " + preAlertMins + " minutes)");
                 beforeIntent.putExtra("notification_id", i + CONSTANT.NOTIFICATION_ID_OFFSET);
                 beforeIntent.putExtra("prayer_time_millis", prayerTime.getTimeInMillis());
                 PendingIntent beforePendingIntent = PendingIntent.getBroadcast(context, i + CONSTANT.REQUEST_CODE_OFFSET, beforeIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
