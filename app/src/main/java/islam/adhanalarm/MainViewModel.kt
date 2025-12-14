@@ -8,12 +8,15 @@ import android.location.LocationManager
 import android.os.Build
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.viewModelScope
 import islam.adhanalarm.handler.CompassHandler
 import islam.adhanalarm.handler.LocationHandler
+import islam.adhanalarm.handler.SensorHandler
+import islam.adhanalarm.handler.SensorData
 import islam.adhanalarm.handler.ScheduleData
 import islam.adhanalarm.handler.ScheduleHandler
 import kotlinx.coroutines.Dispatchers
@@ -34,10 +37,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
+        private const val KEY_ALTITUDE = "altitude"
+        private const val KEY_PRESSURE = "pressure"
     }
 
     private val compassHandler: CompassHandler
     private val locationHandler: LocationHandler
+    private val sensorHandler: SensorHandler
     private val masterKey = MasterKey.Builder(application, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
         .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
         .build()
@@ -70,14 +76,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      * LiveData holding the current location.
      */
     val location: LiveData<Location> = _location
+    private val _sensorReadings = MutableLiveData<SensorData>()
+    val sensorReadings: LiveData<SensorData> = _sensorReadings
 
+    private lateinit var sensorDataObserver: (SensorData) -> Unit
     init {
         compassHandler = CompassHandler(application.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
         locationHandler = LocationHandler(application.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
+        sensorHandler = SensorHandler(application.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
         northDirection = compassHandler.northDirection
         _location.addSource(locationHandler.location) {
             saveLocation(it)
             _location.postValue(it)
+        }
+        sensorDataObserver = {
+            settings.edit()
+                .putString(KEY_ALTITUDE, it.altitude.toString())
+                .putString(KEY_PRESSURE, it.pressure.toString())
+                .apply()
+            _sensorReadings.postValue(it)
+            sensorHandler.stop()
+            sensorHandler.sensorData.removeObserver(sensorDataObserver)
         }
 
         _scheduleData.addSource(_location) { it?.let { loc -> updateData(loc) } }
@@ -86,11 +105,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         loadLocationFromSettings()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        if (::sensorDataObserver.isInitialized) {
+            sensorHandler.sensorData.removeObserver(sensorDataObserver)
+        }
+    }
+
     private fun saveLocation(location: Location) {
-        settings.edit()
-            .putString(KEY_LATITUDE, location.latitude.toString())
-            .putString(KEY_LONGITUDE, location.longitude.toString())
-            .apply()
+        val editor = settings.edit()
+        editor.putString(KEY_LATITUDE, location.latitude.toString())
+        editor.putString(KEY_LONGITUDE, location.longitude.toString())
+        if (location.hasAltitude() && !sensorHandler.hasSensor()) {
+            editor.putString(KEY_ALTITUDE, location.altitude.toString())
+        }
+        editor.apply()
     }
 
     /**
@@ -105,6 +134,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun stopCompass() {
         compassHandler.stopTracking()
+    }
+
+    fun updateSensorValues() {
+        if (sensorHandler.hasSensor()) {
+            sensorHandler.sensorData.observeForever(sensorDataObserver)
+            sensorHandler.start()
+        }
     }
 
     /**
@@ -150,11 +186,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             withContext(Dispatchers.IO) {
                 val latitude = loc.latitude.toString()
                 val longitude = loc.longitude.toString()
-                val altitude = settings.getString("altitude", "0")
-                    val pressure = settings.getString("pressure", "1010")
-                    val temperature = settings.getString("temperature", "10")
+                val altitude = settings.getString(KEY_ALTITUDE, "0")
+                val pressure = settings.getString(KEY_PRESSURE, "1010")
+                val temperature = settings.getString("temperature", "10")
 
-                    val locationAstro = ScheduleHandler.getLocation(latitude, longitude, altitude, pressure, temperature)
+                val locationAstro = ScheduleHandler.getLocation(latitude, longitude, altitude, pressure, temperature)
 
                     // Calculate and post schedule
                     var calculationMethodIndex = settings.getString("calculationMethodsIndex", null)
