@@ -79,7 +79,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _sensorReadings = MutableLiveData<SensorData>()
     val sensorReadings: LiveData<SensorData> = _sensorReadings
 
-    private val sensorDataObserver: (SensorData) -> Unit
+    private lateinit var sensorDataObserver: (SensorData) -> Unit
     init {
         compassHandler = CompassHandler(application.getSystemService(Context.SENSOR_SERVICE) as SensorManager)
         locationHandler = LocationHandler(application.getSystemService(Context.LOCATION_SERVICE) as LocationManager)
@@ -109,7 +109,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
-        sensorHandler.sensorData.removeObserver(sensorDataObserver)
+        if (::sensorDataObserver.isInitialized) {
+            sensorHandler.sensorData.removeObserver(sensorDataObserver)
+        }
     }
 
     private fun saveLocation(location: Location) {
