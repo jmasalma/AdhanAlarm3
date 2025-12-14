@@ -100,4 +100,6 @@
         <item>@string/ishaa</item>
         <item>@string/next_fajr</item>
     </string-array>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="disclaimer_text">Prayer times may not be accurate. Please check your local masjid prayer timetable.</string>
 </resources>
