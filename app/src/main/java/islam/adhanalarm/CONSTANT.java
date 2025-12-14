@@ -29,13 +29,13 @@ public class CONSTANT {
     public static final int NOTIFICATION_ID_OFFSET = 10;
     public static final int REQUEST_CODE_OFFSET = 10;
     public static final Method[] CALCULATION_METHODS = {
-            Method.JAFARI,
+            new Method(16, 14, 4, 0, 0, 0, Rounding.SPECIAL, net.sourceforge.jitl.Mathhab.SHAAFI, 48.5, net.sourceforge.jitl.ExtremeLatitude.GOOD_INVALID, true, 0, 0, 0, 0, 0, 0), // Jafari
             Method.ISNA,
             Method.MUSLIM_LEAGUE,
             Method.UMM_ALQURRA,
             Method.EGYPT_SURVEY,
-            Method.KARACHI_HANAFI,
-            Method.DUBAI
+            new Method(18, 18, 1.5, 0, 0, 0, Rounding.SPECIAL, net.sourceforge.jitl.Mathhab.HANAFI, 48.5, net.sourceforge.jitl.ExtremeLatitude.GOOD_INVALID, false, 0, 0, 0, 0, 0, 0), // Karachi Hanafi
+            new Method(18.2, 18.2, 1.5, 0, 0, 0, Rounding.SPECIAL, net.sourceforge.jitl.Mathhab.SHAAFI, 48.5, net.sourceforge.jitl.ExtremeLatitude.GOOD_INVALID, false, 0, 0, 0, 0, 0, 0) // Dubai
     };
     public static final Rounding[] ROUNDING_TYPES = {
             Rounding.NONE,
