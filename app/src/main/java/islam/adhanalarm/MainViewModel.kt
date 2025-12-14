@@ -103,8 +103,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _qiblaDirection.addSource(_location) { it?.let { loc -> updateData(loc) } }
 
         loadLocationFromSettings()
-        updateLocation()
-        updateSensorValues()
     }
 
     override fun onCleared() {
