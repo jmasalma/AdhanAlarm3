@@ -9,7 +9,7 @@ public class TimeChangedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_TIME_CHANGED.equals(intent.getAction()) || Intent.ACTION_TIMEZONE_CHANGED.equals(intent.getAction())) {
-            PrayerTimeScheduler.scheduleAlarms(context);
+            PrayerTimeScheduler.scheduleAlarms(context, scheduleData -> {});
         }
     }
 }

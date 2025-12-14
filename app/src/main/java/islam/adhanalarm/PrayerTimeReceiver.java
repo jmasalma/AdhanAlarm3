@@ -20,7 +20,7 @@ public class PrayerTimeReceiver extends BroadcastReceiver {
         if (action != null) {
             switch (action) {
                 case CONSTANT.ACTION_UPDATE_PRAYER_TIMES:
-                    PrayerTimeScheduler.scheduleAlarms(context);
+                    PrayerTimeScheduler.scheduleAlarms(context, scheduleData -> {});
                     break;
                 case CONSTANT.ACTION_UPDATE_WIDGET:
                     updateWidgets(context);

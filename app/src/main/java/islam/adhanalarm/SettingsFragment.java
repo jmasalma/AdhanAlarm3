@@ -192,6 +192,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         }
+
+        // Update calculation method summary
+        updateCalculationMethodSummary();
     }
 
     @Override
@@ -215,11 +218,26 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             encryptedEditor.putString(key, sharedPreferences.getString(key, ""));
             encryptedEditor.apply();
 
+            if (key.equals("latitude") || key.equals("longitude")) {
+                updateCalculationMethodSummary();
+            }
+
         // Broadcast intent to update widget
         Intent intent = new Intent(getActivity(), PrayerTimeReceiver.class);
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
         }
+    }
+
+    private void updateCalculationMethodSummary() {
+        ListPreference calculationMethodPref = (ListPreference) findPreference("calculationMethodsIndex");
+        calculationMethodPref.setEnabled(false);
+        PrayerTimeScheduler.getCountryCode(getActivity(), Double.parseDouble(mEncryptedSharedPreferences.getString("latitude", "0")), Double.parseDouble(mEncryptedSharedPreferences.getString("longitude", "0"))).thenAccept(countryCode -> {
+            String calculationMethodIndex = PrayerTimeScheduler.getCalculationMethodIndex(countryCode);
+            getActivity().runOnUiThread(() -> {
+                calculationMethodPref.setSummary(getResources().getStringArray(R.array.calculation_methods)[Integer.parseInt(calculationMethodIndex)]);
+            });
+        });
     }
 
     private void updateSummary(EditTextPreference preference) {

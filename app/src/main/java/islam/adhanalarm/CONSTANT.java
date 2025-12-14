@@ -14,7 +14,15 @@ public class CONSTANT {
     public static final short MAGHRIB = 4;
     public static final short ISHAA = 5;
     public static final short NEXT_FAJR = 6;
-    public static final String[][] CALCULATION_METHOD_COUNTRY_CODES = new String[0][];
+    public static final String[][] CALCULATION_METHOD_COUNTRY_CODES = {
+            {"EG", "SY", "IQ", "JO", "LB", "PS", "TR"}, // Egypt
+            {"US", "CA"}, // ISNA
+            {"SA"},       // Umm al-Qura
+            {"GB", "FR", "DE", "IT", "ES", "NL", "BE", "SE", "NO", "DK", "CH", "AT", "IE", "FI", "PT", "LU", "IS", "GR", "CY"}, // Europe
+            {"PK", "BD", "IN"}, // Karachi
+            {"AE", "BH", "KW", "OM", "QA"}, // Gulf
+            {"ID", "MY", "SG", "BN"}  // Southeast Asia
+    };
     public static final String DEFAULT_CALCULATION_METHOD = "1";
     public static final String DEFAULT_ROUNDING_TYPE = "2";
     public static final int DEFAULT_TIME_FORMAT = 0;

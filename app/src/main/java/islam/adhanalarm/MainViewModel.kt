@@ -213,9 +213,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         }
                         settings.edit().putString("calculationMethodsIndex", calculationMethodIndex).apply()
                     }
-                    val newScheduleData = PrayerTimeScheduler.scheduleAlarms(getApplication())
-                    if (newScheduleData != null) {
-                        _scheduleData.postValue(newScheduleData)
+                    PrayerTimeScheduler.scheduleAlarms(getApplication()) { newScheduleData ->
+                        if (newScheduleData != null) {
+                            _scheduleData.postValue(newScheduleData)
+                        }
                     }
                     // Calculate and post qibla direction
                     val qibla = Jitl.getNorthQibla(locationAstro)
