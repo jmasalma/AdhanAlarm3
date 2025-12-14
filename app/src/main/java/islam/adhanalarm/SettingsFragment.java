@@ -21,6 +21,8 @@ import androidx.security.crypto.MasterKey;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import islam.adhanalarm.handler.SensorData;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;
     private Observer<Location> mLocationObserver;
+    private Observer<SensorData> mSensorReadingsObserver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,24 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         };
         mViewModel.getLocation().observeForever(mLocationObserver);
 
+        mSensorReadingsObserver = new Observer<SensorData>() {
+            @Override
+            public void onChanged(@Nullable SensorData sensorReadings) {
+                if (sensorReadings == null) return;
+
+                final String altitude = Float.toString(sensorReadings.getAltitude());
+                EditTextPreference altitudePref = (EditTextPreference) findPreference("altitude");
+                altitudePref.setText(altitude);
+                updateSummary(altitudePref);
+
+                final String pressure = Float.toString(sensorReadings.getPressure());
+                EditTextPreference pressurePref = (EditTextPreference) findPreference("pressure");
+                pressurePref.setText(pressure);
+                updateSummary(pressurePref);
+            }
+        };
+        mViewModel.getSensorReadings().observeForever(mSensorReadingsObserver);
+
         findPreference("lookupGPS").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 mViewModel.updateLocation();
@@ -120,8 +141,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mViewModel != null && mLocationObserver != null) {
-            mViewModel.getLocation().removeObserver(mLocationObserver);
+        if (mViewModel != null) {
+            if (mLocationObserver != null) {
+                mViewModel.getLocation().removeObserver(mLocationObserver);
+            }
+            if (mSensorReadingsObserver != null) {
+                mViewModel.getSensorReadings().removeObserver(mSensorReadingsObserver);
+            }
         }
     }
 
