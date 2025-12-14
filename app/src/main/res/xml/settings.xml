@@ -22,13 +22,6 @@
             android:entries="@array/calculation_methods"
             android:entryValues="@array/calculation_methods_values"
             android:defaultValue="3" />
-        <ListPreference
-            android:key="timeFormatIndex"
-            android:title="@string/time_format"
-            android:summary="%s"
-            android:entries="@array/time_format"
-            android:entryValues="@array/time_format_values"
-            android:defaultValue="0" />
         <EditTextPreference
             android:key="beforePrayerNotification"
             android:title="@string/before_prayer_notification"
@@ -42,28 +35,6 @@
             android:key="altitude"
             android:title="@string/altitude"
             android:inputType="numberDecimal"
-            android:defaultValue="0" />
-        <EditTextPreference
-            android:key="pressure"
-            android:title="@string/pressure"
-            android:inputType="numberDecimal|numberSigned"
-            android:defaultValue="110" />
-        <EditTextPreference
-            android:key="temperature"
-            android:title="@string/temperature"
-            android:inputType="numberDecimal|numberSigned"
-            android:defaultValue="10" />
-        <ListPreference
-            android:key="roundingTypesIndex"
-            android:title="@string/rounding"
-            android:summary="%s"
-            android:entries="@array/rounding_types"
-            android:entryValues="@array/rounding_types_values"
-            android:defaultValue="2" />
-        <EditTextPreference
-            android:key="offsetMinutes"
-            android:title="@string/offset"
-            android:inputType="number|numberSigned"
             android:defaultValue="0" />
     </PreferenceCategory>
 
