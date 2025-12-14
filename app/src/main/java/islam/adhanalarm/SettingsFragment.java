@@ -36,7 +36,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "longitude",
             "beforePrayerNotification",
             "altitude",
-            "pressure"
+            "pressure",
+            "calculationMethodsIndex"
     ));
     private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;
@@ -231,13 +232,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     private void updateCalculationMethodSummary() {
         ListPreference calculationMethodPref = (ListPreference) findPreference("calculationMethodsIndex");
-        calculationMethodPref.setEnabled(false);
-        PrayerTimeScheduler.getCountryCode(getActivity(), Double.parseDouble(mEncryptedSharedPreferences.getString("latitude", "0")), Double.parseDouble(mEncryptedSharedPreferences.getString("longitude", "0"))).thenAccept(countryCode -> {
-            String calculationMethodIndex = PrayerTimeScheduler.getCalculationMethodIndex(countryCode);
-            getActivity().runOnUiThread(() -> {
-                calculationMethodPref.setSummary(getResources().getStringArray(R.array.calculation_methods)[Integer.parseInt(calculationMethodIndex)]);
+        if (calculationMethodPref.getValue().equals("-1")) {
+            PrayerTimeScheduler.getCountryCode(getActivity(), Double.parseDouble(mEncryptedSharedPreferences.getString("latitude", "0")), Double.parseDouble(mEncryptedSharedPreferences.getString("longitude", "0"))).thenAccept(countryCode -> {
+                String calculationMethodIndex = PrayerTimeScheduler.getCalculationMethodIndex(countryCode);
+                getActivity().runOnUiThread(() -> {
+                    String[] calculationMethodNames = getResources().getStringArray(R.array.calculation_methods);
+                    calculationMethodPref.setSummary(calculationMethodNames[0] + " (" + calculationMethodNames[Integer.parseInt(calculationMethodIndex) + 1] + ")");
+                });
             });
-        });
+        } else {
+            updateListSummary(calculationMethodPref);
+        }
     }
 
     private void updateSummary(EditTextPreference preference) {

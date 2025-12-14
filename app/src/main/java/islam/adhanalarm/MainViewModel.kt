@@ -193,26 +193,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 val locationAstro = ScheduleHandler.getLocation(latitude, longitude, altitude, pressure, temperature)
 
                     // Calculate and post schedule
-                    var calculationMethodIndex = settings.getString("calculationMethodsIndex", null)
-                    if (calculationMethodIndex == null) {
-                        val geocoder = android.location.Geocoder(getApplication(), java.util.Locale.getDefault())
-                        val addresses = awaitGetFromLocation(geocoder, loc.latitude, loc.longitude)
-                        val countryCode = addresses?.firstOrNull()?.countryCode
-                        if (countryCode != null) {
-                            val locale = java.util.Locale("", countryCode)
-                            val countryCodeAlpha3 = locale.isO3Country.uppercase(java.util.Locale.ROOT)
-                            for ((index, codes) in CONSTANT.CALCULATION_METHOD_COUNTRY_CODES.withIndex()) {
-                                if (codes.contains(countryCodeAlpha3)) {
-                                    calculationMethodIndex = index.toString()
-                                    break
-                                }
-                            }
-                        }
-                        if (calculationMethodIndex == null) {
-                            calculationMethodIndex = CONSTANT.DEFAULT_CALCULATION_METHOD
-                        }
-                        settings.edit().putString("calculationMethodsIndex", calculationMethodIndex).apply()
-                    }
                     PrayerTimeScheduler.scheduleAlarms(getApplication()) { newScheduleData ->
                         if (newScheduleData != null) {
                             _scheduleData.postValue(newScheduleData)

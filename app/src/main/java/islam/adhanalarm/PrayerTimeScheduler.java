@@ -48,28 +48,35 @@ public class PrayerTimeScheduler {
         String longitude = settings.getString("longitude", null);
 
         if (latitude != null && longitude != null) {
-            final String finalLatitude = latitude;
-            final String finalLongitude = longitude;
-            getCountryCode(context, Double.parseDouble(latitude), Double.parseDouble(longitude)).thenAccept(countryCode -> {
-                String altitude = settings.getString("altitude", "0");
-                String pressure = settings.getString("pressure", "1010");
-                String temperature = settings.getString("temperature", "10");
-                Location locationAstro = ScheduleHandler.getLocation(finalLatitude, finalLongitude, altitude, pressure, temperature);
-                String calculationMethodIndex = getCalculationMethodIndex(countryCode);
-                String roundingTypeIndex = settings.getString("roundingTypesIndex", String.valueOf(CONSTANT.DEFAULT_ROUNDING_TYPE));
-                int offsetMinutes = 0;
-                try {
-                    offsetMinutes = Integer.parseInt(settings.getString("offsetMinutes", "0"));
-                } catch (NumberFormatException e) {
-                    // Ignore and use 0
-                }
-                ScheduleData newScheduleData = ScheduleHandler.calculate(locationAstro, calculationMethodIndex, roundingTypeIndex, offsetMinutes);
-                ScheduleHandler.scheduleAlarms(context, newScheduleData);
-                callback.accept(newScheduleData);
-            });
+            String calculationMethodIndex = settings.getString("calculationMethodsIndex", "-1");
+            if (calculationMethodIndex.equals("-1")) {
+                getCountryCode(context, Double.parseDouble(latitude), Double.parseDouble(longitude)).thenAccept(countryCode -> {
+                    String newCalculationMethodIndex = getCalculationMethodIndex(countryCode);
+                    calculateAndSchedule(context, settings, latitude, longitude, newCalculationMethodIndex, callback);
+                });
+            } else {
+                calculateAndSchedule(context, settings, latitude, longitude, calculationMethodIndex, callback);
+            }
         } else {
             callback.accept(null);
         }
+    }
+
+    private static void calculateAndSchedule(Context context, SharedPreferences settings, String latitude, String longitude, String calculationMethodIndex, Consumer<ScheduleData> callback) {
+        String altitude = settings.getString("altitude", "0");
+        String pressure = settings.getString("pressure", "1010");
+        String temperature = settings.getString("temperature", "10");
+        Location locationAstro = ScheduleHandler.getLocation(latitude, longitude, altitude, pressure, temperature);
+        String roundingTypeIndex = settings.getString("roundingTypesIndex", String.valueOf(CONSTANT.DEFAULT_ROUNDING_TYPE));
+        int offsetMinutes = 0;
+        try {
+            offsetMinutes = Integer.parseInt(settings.getString("offsetMinutes", "0"));
+        } catch (NumberFormatException e) {
+            // Ignore and use 0
+        }
+        ScheduleData newScheduleData = ScheduleHandler.calculate(locationAstro, calculationMethodIndex, roundingTypeIndex, offsetMinutes);
+        ScheduleHandler.scheduleAlarms(context, newScheduleData);
+        callback.accept(newScheduleData);
     }
 
     public static CompletableFuture<String> getCountryCode(Context context, double latitude, double longitude) {
