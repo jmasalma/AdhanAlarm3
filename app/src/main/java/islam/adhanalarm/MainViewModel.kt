@@ -95,13 +95,16 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 .putString(KEY_PRESSURE, it.pressure.toString())
                 .apply()
             _sensorReadings.postValue(it)
+            sensorHandler.stop()
+            sensorHandler.sensorData.removeObserver(sensorDataObserver)
         }
-        sensorHandler.sensorData.observeForever(sensorDataObserver)
 
         _scheduleData.addSource(_location) { it?.let { loc -> updateData(loc) } }
         _qiblaDirection.addSource(_location) { it?.let { loc -> updateData(loc) } }
 
         loadLocationFromSettings()
+        updateLocation()
+        updateSensorValues()
     }
 
     override fun onCleared() {
@@ -124,7 +127,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun startCompass() {
         compassHandler.startTracking()
-        sensorHandler.start()
     }
 
     /**
@@ -132,7 +134,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun stopCompass() {
         compassHandler.stopTracking()
-        sensorHandler.stop()
+    }
+
+    fun updateSensorValues() {
+        if (sensorHandler.hasSensor()) {
+            sensorHandler.sensorData.observeForever(sensorDataObserver)
+            sensorHandler.start()
+        }
     }
 
     /**

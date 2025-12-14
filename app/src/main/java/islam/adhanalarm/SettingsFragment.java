@@ -36,8 +36,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "longitude",
             "beforePrayerNotification",
             "altitude",
-            "pressure",
-            "preAlertMins"
+            "pressure"
     ));
     private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;
@@ -119,6 +118,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         findPreference("lookupGPS").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 mViewModel.updateLocation();
+                mViewModel.updateSensorValues();
                 return true;
             }
         });

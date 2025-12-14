@@ -60,7 +60,7 @@
     <string name="fixed_ishaa">Fixed Ishaa Interval (always 90)</string>
     <string name="time_format">Time Format</string>
     <string name="clock_24_hour">24 Hour Clock</string>
-    <string name="altitude">Altitude (m)</string>
+    <string name="altitude">Altitude</string>
     <string name="pressure">Pressure</string>
     <string name="temperature">Temperature</string>
     <string name="degrees_celsius">°C</string>
@@ -71,7 +71,7 @@
     <string name="offset">Offset</string>
     <string name="minutes">minutes</string>
     <string name="minutes_0_to_disable">Minutes (0 to disable)</string>
-    <string name="pre_alert_mins">Pre-Alert (Mins)</string>
+    <string name="before_prayer_notification">Before Prayer Notification</string>
     <string name="language">Language</string>
     <string name="theme">Theme</string>
     <string name="brown">Brown</string>
