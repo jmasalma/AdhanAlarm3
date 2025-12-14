@@ -71,7 +71,7 @@
     <string name="offset">Offset</string>
     <string name="minutes">minutes</string>
     <string name="minutes_0_to_disable">Minutes (0 to disable)</string>
-    <string name="before_prayer_notification">Before Prayer Notification</string>
+    <string name="pre_alert_mins">Pre-Alert (Mins)</string>
     <string name="language">Language</string>
     <string name="theme">Theme</string>
     <string name="brown">Brown</string>
