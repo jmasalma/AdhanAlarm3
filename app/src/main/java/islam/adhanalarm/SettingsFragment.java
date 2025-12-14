@@ -33,10 +33,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "latitude",
             "longitude",
             "beforePrayerNotification",
-            "altitude",
-            "pressure",
-            "temperature",
-            "offsetMinutes"
+            "altitude"
     ));
     private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;
