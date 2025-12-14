@@ -48,4 +48,9 @@
         android:title="@string/information"
         android:summary="@string/information_text" />
 
+    <Preference
+        android:key="disclaimer"
+        android:title="@string/disclaimer"
+        android:summary="@string/disclaimer_text" />
+
 </PreferenceScreen>
