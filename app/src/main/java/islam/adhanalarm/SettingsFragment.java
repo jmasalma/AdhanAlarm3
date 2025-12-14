@@ -32,7 +32,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     final Set<String> PREFS_TO_UPDATE_SUMMARY = new HashSet<>(Arrays.asList(
             "latitude",
             "longitude",
-            "beforePrayerNotification",
+            "preAlertMins",
             "altitude"
     ));
     private SharedPreferences mEncryptedSharedPreferences;
