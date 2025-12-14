@@ -36,6 +36,11 @@
             android:title="@string/altitude"
             android:inputType="numberDecimal"
             android:defaultValue="0" />
+        <EditTextPreference
+            android:key="pressure"
+            android:title="@string/pressure"
+            android:inputType="numberDecimal"
+            android:defaultValue="1010" />
     </PreferenceCategory>
 
     <Preference

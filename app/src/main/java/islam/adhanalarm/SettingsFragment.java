@@ -104,13 +104,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
                 final String altitude = Float.toString(sensorReadings.getAltitude());
                 EditTextPreference altitudePref = (EditTextPreference) findPreference("altitude");
-                altitudePref.setText(altitude);
-                updateSummary(altitudePref);
+                if (altitudePref != null) {
+                    altitudePref.setText(altitude);
+                    updateSummary(altitudePref);
+                }
 
                 final String pressure = Float.toString(sensorReadings.getPressure());
                 EditTextPreference pressurePref = (EditTextPreference) findPreference("pressure");
-                pressurePref.setText(pressure);
-                updateSummary(pressurePref);
+                if (pressurePref != null) {
+                    pressurePref.setText(pressure);
+                    updateSummary(pressurePref);
+                }
             }
         };
         mViewModel.getSensorReadings().observeForever(mSensorReadingsObserver);
