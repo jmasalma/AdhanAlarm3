@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="calculation_methods">
-        <item>@string/automatic</item>
         <item>@string/jafari</item>
         <item>@string/north_america</item>
         <item>@string/muslim_league</item>
@@ -11,7 +10,6 @@
         <item>@string/dubai</item>
     </array>
     <string-array name="calculation_methods_values">
-        <item>-1</item>
         <item>0</item>
         <item>1</item>
         <item>2</item>

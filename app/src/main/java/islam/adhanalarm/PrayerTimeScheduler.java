@@ -48,10 +48,11 @@ public class PrayerTimeScheduler {
         String longitude = settings.getString("longitude", null);
 
         if (latitude != null && longitude != null) {
-            String calculationMethodIndex = settings.getString("calculationMethodsIndex", "-1");
-            if (calculationMethodIndex.equals("-1")) {
+            String calculationMethodIndex = settings.getString("calculationMethodsIndex", null);
+            if (calculationMethodIndex == null) {
                 getCountryCode(context, Double.parseDouble(latitude), Double.parseDouble(longitude)).thenAccept(countryCode -> {
                     String newCalculationMethodIndex = getCalculationMethodIndex(countryCode);
+                    settings.edit().putString("calculationMethodsIndex", newCalculationMethodIndex).apply();
                     calculateAndSchedule(context, settings, latitude, longitude, newCalculationMethodIndex, callback);
                 });
             } else {
@@ -106,5 +107,10 @@ public class PrayerTimeScheduler {
             }
         }
         return CONSTANT.DEFAULT_CALCULATION_METHOD;
+    }
+
+    public static String getRegionCalculationMethod(String countryCode) {
+        String calculationMethod = getCalculationMethodIndex(countryCode);
+        return calculationMethod.equals(CONSTANT.DEFAULT_CALCULATION_METHOD) ? null : calculationMethod;
     }
 }
