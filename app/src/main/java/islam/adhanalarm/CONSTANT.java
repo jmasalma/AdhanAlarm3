@@ -23,7 +23,7 @@ public class CONSTANT {
             {"PK", "BD", "IN", "AF"}, // Karachi
             {}  // Dubai
     };
-    public static final String DEFAULT_CALCULATION_METHOD = "2";
+    public static final String DEFAULT_CALCULATION_METHOD = "1";
     public static final String DEFAULT_ROUNDING_TYPE = "2";
     public static final int DEFAULT_TIME_FORMAT = 0;
     public static final int NOTIFICATION_ID_OFFSET = 10;

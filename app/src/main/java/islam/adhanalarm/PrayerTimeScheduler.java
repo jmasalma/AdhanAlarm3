@@ -108,9 +108,4 @@ public class PrayerTimeScheduler {
         }
         return CONSTANT.DEFAULT_CALCULATION_METHOD;
     }
-
-    public static String getRegionCalculationMethod(String countryCode) {
-        String calculationMethod = getCalculationMethodIndex(countryCode);
-        return calculationMethod.equals(CONSTANT.DEFAULT_CALCULATION_METHOD) ? null : calculationMethod;
-    }
 }

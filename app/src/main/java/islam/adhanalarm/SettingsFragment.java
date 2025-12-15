@@ -233,14 +233,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     private void updateCalculationMethodSummary() {
         ListPreference calculationMethodPref = (ListPreference) findPreference("calculationMethodsIndex");
         if (calculationMethodPref.getValue() == null) {
+            calculationMethodPref.setSummary("Detecting...");
             PrayerTimeScheduler.getCountryCode(getActivity(), Double.parseDouble(mEncryptedSharedPreferences.getString("latitude", "0")), Double.parseDouble(mEncryptedSharedPreferences.getString("longitude", "0"))).thenAccept(countryCode -> {
-                String calculationMethodIndex = PrayerTimeScheduler.getRegionCalculationMethod(countryCode);
-                if (calculationMethodIndex != null) {
-                    getActivity().runOnUiThread(() -> {
-                        calculationMethodPref.setValue(calculationMethodIndex);
-                        updateListSummary(calculationMethodPref);
-                    });
-                }
+                String calculationMethodIndex = PrayerTimeScheduler.getCalculationMethodIndex(countryCode);
+                getActivity().runOnUiThread(() -> {
+                    calculationMethodPref.setValue(calculationMethodIndex);
+                    updateListSummary(calculationMethodPref);
+                });
             });
         }
     }
