@@ -36,7 +36,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             "longitude",
             "beforePrayerNotification",
             "altitude",
-            "pressure"
+            "pressure",
+            "calculationMethodsIndex"
     ));
     private SharedPreferences mEncryptedSharedPreferences;
     private MainViewModel mViewModel;
@@ -192,6 +193,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             }
         }
+
+        // Update calculation method summary
+        updateCalculationMethodSummary();
     }
 
     @Override
@@ -215,10 +219,28 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             encryptedEditor.putString(key, sharedPreferences.getString(key, ""));
             encryptedEditor.apply();
 
+            if (key.equals("latitude") || key.equals("longitude")) {
+                updateCalculationMethodSummary();
+            }
+
         // Broadcast intent to update widget
         Intent intent = new Intent(getActivity(), PrayerTimeReceiver.class);
         intent.setAction(CONSTANT.ACTION_UPDATE_WIDGET);
         getActivity().sendBroadcast(intent);
+        }
+    }
+
+    private void updateCalculationMethodSummary() {
+        ListPreference calculationMethodPref = (ListPreference) findPreference("calculationMethodsIndex");
+        if (calculationMethodPref.getValue() == null) {
+            calculationMethodPref.setSummary("Detecting...");
+            PrayerTimeScheduler.getCountryCode(getActivity(), Double.parseDouble(mEncryptedSharedPreferences.getString("latitude", "0")), Double.parseDouble(mEncryptedSharedPreferences.getString("longitude", "0"))).thenAccept(countryCode -> {
+                String calculationMethodIndex = PrayerTimeScheduler.getCalculationMethodIndex(countryCode);
+                getActivity().runOnUiThread(() -> {
+                    calculationMethodPref.setValue(calculationMethodIndex);
+                    updateListSummary(calculationMethodPref);
+                });
+            });
         }
     }
 

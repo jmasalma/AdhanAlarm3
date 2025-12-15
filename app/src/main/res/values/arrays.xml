@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="calculation_methods">
-        <item>@string/egypt_survey</item>
-        <item>@string/karachi_shaf</item>
-        <item>@string/karachi_hanaf</item>
+        <item>@string/jafari</item>
         <item>@string/north_america</item>
         <item>@string/muslim_league</item>
         <item>@string/umm_alqurra</item>
-        <item>@string/fixed_ishaa</item>
+        <item>@string/egypt_survey</item>
+        <item>@string/karachi_hanaf</item>
+        <item>@string/dubai</item>
     </array>
     <string-array name="calculation_methods_values">
         <item>0</item>
